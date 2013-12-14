@@ -32,4 +32,34 @@ class AppKernel extends Kernel
     {
         $loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
     }
+
+    // Allow the methods getCacheDir and getLogDir to write to the kernel, and return a
+    // a path in the Temp directory. Taken from http://chrisdev.de/2012/01/26/symfony2-mit-cloudcontrol/
+    public function getCacheDir()
+    {
+        if ($this->getEnvironment() != 'prod') {
+            parent::getLogDir();
+        }
+        
+        $dir = sys_get_temp_dir() . '/sf2standard/cache';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        
+        return $dir;
+    }
+ 
+    public function getLogDir()
+    {
+        if ($this->getEnvironment() != 'prod') {
+            parent::getLogDir();
+        }
+        
+        $dir = sys_get_temp_dir() . '/sf2standard/logs';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        
+        return $dir;
+    }
 }
